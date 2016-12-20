@@ -8,6 +8,7 @@
 </head>
 <body>
     <script>
+    "use strict";
     /****计算乘积****/
     var mult=function(){
         console.log('开始计算乘积');
@@ -32,7 +33,7 @@
         return function(){
             // arguments是个类数组对象，不能直接应用数组的方法，使用Array.prototype.join.call
             var args = Array.prototype.join.call(arguments,',');
-            if(args in cache){fn
+            if(args in cache){
                 return cache[ args ];
             }
             return cache[ args ] = fn.apply( this, arguments );
