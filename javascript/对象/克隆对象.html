@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+    var Plane =function () {
+        this.blood = 100;
+        this.attackLevel = 1;
+        this.defenseLevel = 1;
+    }
+    var plane = new Plane();
+    console.log( Object.getPrototypeOf( plane ));
+    console.log( Object.getPrototypeOf( plane )=== Object.prototype);
+    plane.blood = 500;
+    plane.attackLevel = 10;
+    plane.defenseLevel = 7;
+    var clonePlane = Object.create(plane);
+    console.log( clonePlane );
+    console.log( Object.getPrototypeOf( clonePlane ));
+    console.log( Object.getPrototypeOf( clonePlane ) === Object.prototype );
+    // 在不支持Object.create 方法的浏览器中，则可以使用以下代码:
+    // Object.create = Object.create || function( obj ){
+    //     var F = function(){};
+    //     F.prototype = obj;
+    //     return new F();
+    // }
+    </script>
+</body>
+</html>
