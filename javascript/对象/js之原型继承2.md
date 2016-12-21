@@ -77,3 +77,20 @@ Bar.property = Foo.property并不会创建一个关联到Bar.prototype的新对�
 Bar.property = new Foo()的确会创建一个关联到Bar.prototype的新对象。但是它使用了Foo()的构造函数调用，如果函数Foo有一些副作用（比如写日志，修改状态，注册到其他对象，给this添加数据属性等）的话，就会影响到Bar()的“后代”。
 
 因此，要创建一个适合的关联对象，必须使用Object.create()，而不是使用构造函数Foo()。
+
+instanceof,isPrototypeOf()，Object.getPrototypeOf()之间的区别
+```javascript
+var Animal = function (name) {
+    this.name = name;
+    this.sayHi = function () {
+        console.log('hello,I\'m ' + this.name + ',and I\'m a ' + this.type);
+    }
+}
+var Dog = function (name) {
+    Animal.call(this,name);
+    this.type = 'dog';
+}
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
+var dog = new Dog('biubiu');
+```
