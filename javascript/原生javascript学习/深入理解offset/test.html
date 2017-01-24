@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  .back-top-btn {
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    padding: 10px 15px;
+    background: #666;
+    color: #fff;
+    cursor: pointer;
+  }
+  </style>
+</head>
+<body>
+  <div id="fixed-box" class="back-top-btn">element设置position: fixed</div>
+  <div id="offset-box"></div>
+  <script>
+  var fixedBox = document.getElementById('fixed-box')
+  var offsetBox = document.getElementById('offset-box')
+  // offsetBox.innerHTML = fixedBox.offsetParent
+  console.log(fixedBox.offsetParent);
+  console.log(fixedBox.offsetTop);//  offsetTop 依然有值
+  //  chrome 下为null， offsetTop 为20
+  //  firefox 下为body， offsetTop 为20
+  console.log(document.body.offsetParent);
+  </script>
+</body>
+</html>

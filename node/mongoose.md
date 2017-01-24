@@ -109,6 +109,34 @@ User.create({
 ```
 ##### 查询
 
+一种方法是：
+```javascript
+User.find({ name: '胡八一' }).exec(callback);
+```
+另一种方法：
+
+```javascript
+User.find({ name: '胡八一'}, callback);
+```
+基本上所有涉及到查询的模型方法都有这样两种形式的查询方式，一种是不往查询方法中传递回调函数，这时查询方法不会立即执行查询，而是返回一个query对象，用户可以再在query对象上修改查询条件，直到执行exec(callback)方法；而第二种是往查询方法中传递回调函数，这时查询方法立即执行。
+
+推荐使用前者，因为这样方便指定复杂的条件以及用于链式调用
+
+```javascript
+User
+.find({ author: 'me' })
+.where('title').equals('this is title')
+.where('meta.votes').gt(17).lt(66)
+.limit(10)
+.sort('-date')
+.select('title author body')
+.exec(callback);
+```
+##### 删除
+
+语法：**Model.remove(conditions, [callback])**
+
+
 
 
 

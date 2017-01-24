@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>requestAnimationFrame 实现返回顶部操作</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .wrapper {
+      height: 1200px;
+    }
+    .back-top-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      padding: 10px 15px;
+      background: #666;
+      color: #fff;
+      border-radius: 50%;
+      display: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <p>可参考资料：<a href="https://segmentfault.com/a/1190000007738186">地址</a></p>
+    <div class="back-top-btn" id="backId">
+      返回</br>顶部
+    </div>
+  </div>
+  <script>
+  window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            function( callback ){
+              window.setTimeout(callback, 1000 / 60);
+            };
+  })();
+    var back = {
+      animate: function (startPos, stopPos, element) {
+        var step = 20; // 定义步长为10
+        var nowPos = startPos - 20; //
+        window.requestAnimFrame(function () {
+          element.scrollTop= nowPos
+          // 滚动到预定位置则结束
+          if(nowPos <= stopPos){
+            nowPos = stopPos;
+            return;
+          }
+          back.animate(nowPos, stopPos, element); // 递归调用
+        })
+      }
+    }
+    var btn = document.getElementById('backId');
+    var body = document.getElementsByTagName('body')[0]
+    body.onscroll = function () {
+      var top = document.body.scrollTop
+      if (top > 200) {
+        btn.style.display = 'block'
+      }
+      btn.onclick = function () {
+        back.animate(top, 0, document.body)
+        btn.style.display = 'none'
+      }
+    }
+
+  </script>
+</body>
+</html>
