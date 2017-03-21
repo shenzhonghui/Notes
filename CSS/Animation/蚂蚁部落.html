@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=" utf-8">
+<title>蚂蚁部落</title>
+<style type="text/css">
+div{
+  width:100px;
+  height:100px;
+  background:red;
+  position:relative;
+  animation:theanimation 5s infinite alternate;
+  -webkit-animation:theanimation 5s infinite alternate ;
+  -moz-animation:theanimation 5s infinite alternate ;
+  -o-animation:theanimation 5s infinite alternate ;
+  -ms-animation:theanimation 5s infinite alternate ;
+}
+@keyframes theanimation{
+  0%{top:0px;left:0px;background:red;}
+  25%{top:0px;left:100px;background:blue;}
+  50%{top:100px;left:100px;background:yellow;}
+  75%{top:100px;left:0px;background:green;}
+  100%{top:0px;left:0px;background:red;}
+}
+@-moz-keyframes theanimation{
+  0% {top:0px;left:0px;background:red;}
+  25%{top:0px;left:100px;background:blue;}
+  50%{top:100px;left:100px;background:yellow;}
+  75%{top:100px;left:0px;background:green;}
+  100%{top:0px;left:0px;background:red;}
+}
+@-webkit-keyframes theanimation{
+  0%{top:0px;left:0px;background:red;}
+  25%{top:0px;left:100px;background:blue;}
+  50%{top:100px;left:100px;background:yellow;}
+  75%{top:100px;left:0px;background:green;}
+  100%{top:0px;left:0px;background:red;}
+}
+@-o-keyframes theanimation{
+  0%{top:0px;left:0px;background:red;}
+  25%{top:0px;left:100px;background:blue;}
+  50%{top:100px;left:100px;background:yellow;}
+  75%{top:100px;left:0px;background:green;}
+  100%{top:0px;left:0px;background:red;}
+}
+</style>
+</head>
+<body>
+<div></div>
+</body>
+</html>

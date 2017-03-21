@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>日历组件中数组方法的使用</title>
+</head>
+<body>
+  <script>
+    var now = new Date();
+    var state = {
+      year: now.getFullYear(),
+      month: now.getMonth(),
+      day: now.getDate(),
+      picked: false
+    };
+    //定义每个月的天数，如果是闰年第二月改为29天
+    var year = state.year;
+    console.log(year);
+    var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+      daysInMonth[1] = 29
+    }
+    console.log(daysInMonth);
+    var daysInPreviousMonth = [].concat(daysInMonth);
+    daysInPreviousMonth.unshift(daysInPreviousMonth.pop());
+    console.log(daysInPreviousMonth);
+    //获取每一个月显示数据中需要补足上个月的天数
+    //new Date().getDay()获取一周中的某一天(0~6)，0代表星期天，6代表星期六。
+    var addDaysFromPreMonth = new Array(12)
+      .fill(null)
+      .map((item, index)=> {
+        // 获取每个月的第一天(即1号)是一周中的某一天(0~6)，0代表星期天，6代表星期六。
+        let day = new Date(year, index, 1).getDay()
+        // 为0就是星期日
+        if (day === 0) {
+          return 6
+        } else {
+          return day
+        }
+      })
+    //已数组形式返回一年中每个月的显示数据,每个数据为6行*7天
+    var data = new Array(12).fill([]).map((month, monthIndex) => {
+      var addDays = addDaysFromPreMonth[monthIndex],
+        daysCount = daysInMonth[monthIndex],
+        daysCountPrevious = daysInPreviousMonth[monthIndex],
+        monthData = [];
+      //补足上一个月
+      for (; addDays > 0; addDays--) {
+        monthData.unshift(daysCountPrevious--)
+      }
+      //添入当前月
+      for (let i = 0; i < daysCount;) {
+        monthData.push(++i)
+      }
+      //补足下一个月
+      for (let i = 42 - monthData.length, j = 0; j < i;) {
+        monthData.push(++j)
+      }
+      return monthData
+    })
+  console.log(data);
+  </script>
+</body>
+</html>

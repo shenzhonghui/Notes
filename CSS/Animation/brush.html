@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  *,
+  *::after,
+  *::before {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+    overflow: hidden;
+  }
+
+  body {
+    background: #deeef6;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+
+  .phone {
+    position: relative;
+    width: 7em;
+    height: 12em;
+    padding: 0.4em;
+    background: white;
+    text-align: center;
+    border-radius: 8px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    box-shadow: -8px 11px 38px -6px rgba(83, 84, 84, 0.48);
+  }
+  .phone__header {
+    display: inline-block;
+    margin-bottom: 0.3em;
+    width: 2.3em;
+    height: 0.3em;
+    background: #deeef6;
+    border-radius: 0.15em;
+  }
+  .phone__screen {
+    width: 6em;
+    height: 9.6em;
+    position: relative;
+    border-radius: 0.1em;
+    overflow: hidden;
+  }
+  .phone__screen::before, .phone__screen::after {
+    content: " ";
+    width: 100%;
+    height: 150%;
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    -webkit-animation-name: slideDown;
+            animation-name: slideDown;
+    -webkit-animation-duration: 3s;
+            animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+  }
+  .phone__screen::before {
+    background: #ca2562;
+  }
+  .phone__screen::after {
+    -webkit-animation-delay: 1.5s;
+            animation-delay: 1.5s;
+    background: #fee747;
+  }
+  .phone__btn {
+    display: inline-block;
+    margin-top: 0.3em;
+    width: 0.5em;
+    height: 0.5em;
+    background: #deeef6;
+    border-radius: 100%;
+  }
+
+  @-webkit-keyframes slideDown {
+    0% {
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+    50% {
+      -webkit-transform: translate3d(0, 100%, 0);
+              transform: translate3d(0, 100%, 0);
+    }
+    100% {
+      -webkit-transform: translate3d(0, 200%, 0);
+              transform: translate3d(0, 200%, 0);
+    }
+  }
+
+  @keyframes slideDown {
+    0% {
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+    50% {
+      -webkit-transform: translate3d(0, 100%, 0);
+              transform: translate3d(0, 100%, 0);
+    }
+    100% {
+      -webkit-transform: translate3d(0, 200%, 0);
+              transform: translate3d(0, 200%, 0);
+    }
+  }
+  .brush-wrapper {
+    position: absolute;
+    width: 7.1em;
+    height: 7.2em;
+    left: 50%;
+    top: 50%;
+    margin-left: -3.55em;
+    margin-top: -5.2em;
+  }
+  .brush-wrapper.flipper {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  .brush-wrapper.flipper .brush {
+    -webkit-animation-delay: 1.5s;
+            animation-delay: 1.5s;
+  }
+
+  .brush {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    -webkit-animation: brushAnimation 3s 0s forwards infinite linear;
+            animation: brushAnimation 3s 0s forwards infinite linear;
+  }
+  .brush.red .brush__brush {
+    background: #ca2562;
+  }
+  .brush.yellow .brush__brush {
+    background: #fee747;
+  }
+  .brush__brush {
+    width: 6em;
+    height: 1.8em;
+    margin: auto;
+    border-radius: 0.2em;
+    position: relative;
+    z-index: 1;
+  }
+  .brush__arm {
+    width: 3.75em;
+    height: 0.4em;
+    position: absolute;
+    right: 0;
+    bottom: 4.2em;
+    background: #859396;
+    border-radius: 0.15em;
+  }
+  .brush__arm::before, .brush__arm::after {
+    content: " ";
+    position: absolute;
+    background: #859396;
+    border-radius: 0.15em;
+  }
+  .brush__arm::before {
+    right: 0;
+    bottom: 0;
+    height: 2.3em;
+    width: 0.4em;
+  }
+  .brush__arm::after {
+    left: 0;
+    top: 0;
+    height: 2.3em;
+    width: 0.4em;
+  }
+  .brush__arm .arm-inner {
+    background: #859396;
+    position: absolute;
+    right: 0;
+    bottom: 2em;
+    width: 7.1em;
+    height: 0.4em;
+    border-radius: 0.15em;
+  }
+  .brush__handle {
+    width: 2em;
+    height: 3.5em;
+    margin: auto;
+    left: 0;
+    right: 0;
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    background: #2b3a49;
+    border-radius: 0.4em;
+  }
+
+  /*@-webkit-keyframes brushAnimation {
+    0% {
+      opacity: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+      -webkit-transform-origin: 50%;
+              transform-origin: 50%;
+    }
+    33.33333% {
+      -webkit-transform: translate3d(0, 9.6em, 0);
+              transform: translate3d(0, 9.6em, 0);
+    }
+    45% {
+      -webkit-transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+              transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+      -webkit-transform-origin: 300%;
+              transform-origin: 300%;
+    }
+    85% {
+      -webkit-transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+              transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+      -webkit-transform-origin: 300%;
+              transform-origin: 300%;
+    }
+    100% {
+      opacity: 1;
+    }
+  }*/
+
+  @keyframes brushAnimation {
+    0% {
+      opacity: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+      -webkit-transform-origin: 50%;
+              transform-origin: 50%;
+    }
+    33.33333% {
+      -webkit-transform: translate3d(0, 9.6em, 0);
+              transform: translate3d(0, 9.6em, 0);
+    }
+    45% {
+      -webkit-transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+      transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+      -webkit-transform-origin: 300%;
+              transform-origin: 300%;
+    }
+    85% {
+      -webkit-transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+              transform: rotate3d(0, 0, -1, 45deg) translate3d(100%, 0, 0);
+      -webkit-transform-origin: 300%;
+              transform-origin: 300%;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  .phone-grids {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    width: 18em;
+    height: 9.6em;
+    background-color: #444;
+  }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="phone-grids"></div>
+    <div class="phone__header"></div>
+    <div class="phone__screen">
+    </div>
+    <div class="phone__btn"></div>
+  </div>
+  <div class="brush-wrapper">
+    <div class="brush red">
+      <div class="brush__brush"></div>
+      <div class="brush__arm">
+        <div class="arm-inner"></div>
+      </div>
+      <div class="brush__handle"></div>
+    </div>
+  </div>
+  <div class="brush-wrapper flipper">
+    <div class="brush yellow">
+      <div class="brush__brush"></div>
+      <div class="brush__arm">
+        <div class="arm-inner"></div>
+      </div>
+      <div class="brush__handle"></div>
+    </div>
+  </div>
+</body>
+</html>
