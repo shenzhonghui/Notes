@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Sankey</title>
+  <style>
+    body {
+      padding: 10px;
+      min-width: 600px;
+      max-width: 1200px;
+      margin: auto;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      background: #fff;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    .info_box {
+      background: #fff;
+      /*box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.3);*/
+      margin: 0 auto;
+      width: 960px;
+      border-radius: 3px;
+      font-size: 12px;
+      position: relative;
+    }
+    #chart {
+      padding: 20px 20px;
+      min-height: 400px;
+    }
+    .chart-sankey {
+    }
+    .chart-title {
+      padding: 20px 0 10px 20px;
+      font-size: 14px;
+      text-align: left;
+    }
+    .node rect {
+      fill-opacity: .9;
+      shape-rendering: crispEdges;
+      stroke-width: 0;
+      cursor: pointer;
+    }
+    .node text {
+      text-shadow: 0 1px 0 #fff;
+    }
+    .link {
+      fill: none;
+      stroke: #ddd;
+      stroke-opacity: 0.5;
+      cursor: pointer;
+    }
+    .link title {
+      visibility: hidden;
+    }
+    .link:hover {
+      /*stroke-opacity: 1;*/
+    }
+    .link:hover title{
+      visibility: visible;
+    }
+    .d3-tip p {
+      padding: 15px;
+      background: #fff;
+      border-radius: 3px;
+      box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.3);
+      line-height: 1.2;
+      font-size: 12px;
+      -moz-transition: all 1s;
+      -ms-transition: all 1s;
+      -webkit-transition: all 1s;
+      transition: all 1s;
+
+    }
+    .tooltip {
+        position: absolute;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 3px;
+        pointer-events: none;
+        max-width: 200px;
+        display: none;
+        box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.3);
+        line-height: 1.2;
+        font-size: 12px;
+    }
+  </style>
+  <link rel="stylesheet" href="../src/pickerDateRange/dateRange.css">
+  <link rel="stylesheet" href="../src/dialog.css">
+  <link rel="stylesheet" href="../src/dropkick/dropkick.css">
+  <!-- <script src="../src/pickerDateRange/jquery.min.js"></script> -->
+
+  <style>
+    .wrapper_view {
+      padding: 0 30px 40px;
+      position: relative;
+      margin-top: 20px;
+    }
+    .info_box {
+        margin-bottom: 20px;
+    }
+    .info_box .inner {
+        border: 1px solid #e7e7eb;
+    }
+    .info_box .info_hd {
+        line-height: 38px;
+        height: 38px;
+        padding: 0 20px;
+        background-color: #f4f5f9;
+        border-bottom: 1px solid #e7e7eb;
+    }
+      .ui_trendgrid {
+          table-layout: fixed;
+          position: relative;
+          width: 100%;
+          margin: 20px 0;
+      }
+
+      .ui_trendgrid td {
+          height: 130px;
+          border-right: 1px solid #e7e7eb;
+      }
+
+      .ui_trendgrid td.last {
+          border-right: 0 none
+      }
+
+      .ui_trendgrid dl {
+          display: inline-block;
+          *display: inline;
+          *zoom:1;
+          margin-top: 0;
+          padding: 0;
+          text-align: left;
+          position: relative;
+          z-index: 2
+      }
+
+      .ui_trendgrid dt {
+          padding-bottom: 12px;
+          font-size: 14px;
+          font-weight: normal;
+          text-align: center
+      }
+
+      .ui_trendgrid dd {
+          margin-top: 2px;
+          font-size: 14px;
+          line-height: 18px;
+          white-space: nowrap
+      }
+
+      .ui_trendgrid dd.ui_trendgrid_number {
+          text-align: center;
+          color: #676767;
+          font-size: 30px;
+          margin-right: 10px;
+          margin-bottom: 15px
+      }
+
+      .ui_trendgrid dd.ui_trendgrid_number strong {
+          font-weight: 400;
+          font-style: normal
+      }
+
+      .ui_trendgrid dd.ui_trendgrid_number strong .none_data {
+          font-size: 14px
+      }
+      .ui_trendgrid_item {
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+          text-align: center
+      }
+
+      .ui_trendgrid_item b {
+          font-weight: 400;
+          font-style: normal;
+          font-size: 14px
+      }
+
+  </style>
+</head>
+<body>
+  <div class="wrapper_view">
+    <div class="info_box">
+      <div class="inner">
+        <div class="info_hd">
+
+            <div class="ta_date" id="div_date_demo3">
+                <span class="date_title" id="date_demo3"></span>
+                <a class="opt_sel" id="input_trigger_demo3" href="#">
+                    <i class="i_orderd"></i>
+                </a>
+            </div>
+            <div>
+              <select id="normal_select" data-dkcacheid="0">
+                  <!-- <option disabled="" selected="" class="hidden-option">最近7天</option> -->
+                  <option value="AL">最近7天</option>
+                  <option value="AK">最近15天</option>
+                  <option value="AZ">最近30天</option>
+                  <option value="AR">最近90天</option>
+              </select>
+              <span>
+                <select id="normal_select_pages" data-dkcacheid="0">
+                  <!-- <option disabled="" selected="" class="hidden-option">最近7天</option> -->
+                  <option value="AK">付款页面</option>
+                  <option value="AZ">下单页面</option>
+                  <option value="AR">收货页面</option>
+                  <option value="AR">退款页面</option>
+                  <option value="AL">加入购物车</option>
+                </select>
+              </span>
+            </div>
+        </div>
+        <div class="info_bd">
+          <div class="chart-title">
+            <span>用户购买商品状态</span>
+          </div>
+          <div id="chart">
+          </div>
+          <!-- <h4 class="sub_title"></h4>
+          <div class="sub_content"> </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="info_box">
+      <div class="inner">
+        <div class="info_hd">
+            <h4>节点详细信息</h4>
+        </div>
+        <div class="info_bd">
+          <div class="content" id="js_keydata">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 模板 start-->
+  <script type="text/x-dot-template" id="js_keydata_tpl">
+    <table class="ui_trendgrid ui_trendgrid_3">
+        <tr>
+          <td class="first">
+              <div class="ui_trendgrid_item">
+                  <div class="ui_trendgrid_chart"></div>
+                  <dl>
+                      <dt><b>消息发送人数</b></dt>
+                      <dd class="ui_trendgrid_number">
+                        <strong>
+                            {{=it.name}}
+                        </strong>
+                        <em class="ui_trendgrid_unit"></em>
+                      </dd>
+                      <dd>日{{=it.name}}</dd>
+                      <dd>周{{=it.name}}</dd>
+                      <dd>月{{=it.name}}</dd>
+                  </dl>
+              </div>
+          </td>
+          <td>
+              <div class="ui_trendgrid_item">
+                  <div class="ui_trendgrid_chart"></div>
+                  <dl>
+                      <dt><b>消息发送人数</b></dt>
+                      <dd class="ui_trendgrid_number">
+                        <strong>
+                            {{=it.name}}
+                        </strong>
+                        <em class="ui_trendgrid_unit"></em>
+                      </dd>
+                      <dd>日{{=it.name}}</dd>
+                      <dd>周{{=it.name}}</dd>
+                      <dd>月{{=it.name}}</dd>
+                  </dl>
+              </div>
+          </td>
+          <td class="last">
+              <div class="ui_trendgrid_item">
+                  <div class="ui_trendgrid_chart"></div>
+                  <dl>
+                      <dt><b>消息发送人数</b></dt>
+                      <dd class="ui_trendgrid_number">
+                        <strong>
+                            {{=it.name}}
+                        </strong>
+                        <em class="ui_trendgrid_unit"></em>
+                      </dd>
+                      <dd>日{{=it.name}}</dd>
+                      <dd>周{{=it.name}}</dd>
+                      <dd>月{{=it.name}}</dd>
+                  </dl>
+              </div>
+          </td>
+        </tr>
+    </table>
+  </script>
+  <!-- 模板 end -->
+  <script>
+  // // 请求数据
+  // var postData = {};
+  //
+  // // $('#normal_select').dropkick({
+  // //   change: function () {
+  // //     postData.select1 = this.value;
+  // //     Event.trigger( 'add', postData);
+  // //   }
+  // // })
+  // // $('#normal_select_pages').dropkick({
+  // //   change: function () {
+  // //     postData.select2 = this.value;
+  // //     Event.trigger( 'add', postData);
+  // //   }
+  // // })
+  // var data = {
+  //   name: 'shen'
+  // }
+  //
+  //
+  // var dateRange = new pickerDateRange('date_demo3', {
+  //   aRecent7Days : 'aRecent7DaysDemo', //最近7天
+  //   isTodayValid : false,
+  //   startDate : '2017-03-29', // 开始日期
+  //   endDate : '2017-03-29', // 结束日期
+  //   defaultText : ' 至 ',
+  //   inputTrigger : 'input_trigger_demo3',
+  //   theme : 'ta',
+  //   success : function(obj) {
+  //     postData.startDate = obj.startDate
+  //     postData.endDate = obj.endDate
+  //     Event.trigger( 'add', postData);
+  //   }
+  // });
+  // Event.listen( 'add', function (postData) {
+  //   console.log(postData);
+  //   setTimeout(function () {
+  //     document.getElementById("chart").innerHTML="";
+  //       var product= {
+  //         nodes: [
+  //           {
+  //             name: "加入购物车",
+  //             value: 3
+  //           },
+  //           {
+  //             name: "下单",
+  //             value: 2
+  //           },
+  //           {
+  //             name:"付款",
+  //             value:2
+  //           },
+  //           {
+  //             name:"加入购物车",
+  //             value:3
+  //           },
+  //           {
+  //             name:"下单",
+  //             value:5
+  //           },
+  //           {
+  //             name:"付款",
+  //             value:3
+  //           },
+  //           {
+  //             name:"收货",
+  //             value:2
+  //           },
+  //           {
+  //             name:"下单",
+  //             value:2
+  //           },
+  //           {
+  //             name:"付款",
+  //             value:8
+  //           },
+  //           {
+  //             name:"申请退款",
+  //             value:1
+  //           },
+  //           {
+  //             name:"收货",
+  //             value:1
+  //           },
+  //           {
+  //             name:"加入购物车",
+  //             value:1
+  //           },
+  //           {
+  //             name:"付款",
+  //             value:4
+  //           },
+  //           {
+  //             name:"收货",
+  //             value:3
+  //           },
+  //           {
+  //             name:"付款",
+  //             value:1
+  //           },
+  //           {
+  //             name:"申请退款",
+  //             value:3
+  //           },
+  //           {
+  //             name:"收货",
+  //             value:7
+  //           },
+  //           {
+  //             name:"退货",
+  //             value:2
+  //           },
+  //           {
+  //             name:"收货",
+  //             value:1
+  //           }
+  //           ],
+  //           links: [
+  //           {
+  //             source:5,
+  //             target:10,
+  //             value:1
+  //           },
+  //           {
+  //             source:2,
+  //             target:6,
+  //             value:2
+  //           },
+  //           {
+  //             source:1,
+  //             target:5,
+  //             value:2
+  //           },
+  //           {
+  //             source:8,
+  //             target:16,
+  //             value:4
+  //           },
+  //           {
+  //             source:3,
+  //             target:8,
+  //             value:2
+  //           },
+  //           {
+  //             source:7,
+  //             target:12,
+  //             value:2
+  //           },
+  //           {
+  //             source:8,
+  //             target:13,
+  //             value:2
+  //           },
+  //           {
+  //             source:3,
+  //             target:7,
+  //             value:1
+  //           },
+  //           {
+  //             source:12,
+  //             target:15,
+  //             value:1
+  //           },
+  //           {
+  //             source:5,
+  //             target:13,
+  //             value:1
+  //           },
+  //           {
+  //             source:13,
+  //             target:17,
+  //             value:1
+  //           },
+  //           {
+  //             source:0,
+  //             target:5,
+  //             value:1
+  //           },
+  //           {
+  //             source:14,
+  //             target:18,
+  //             value:1
+  //           },
+  //           {
+  //             source:11,
+  //             target:14,
+  //             value:1
+  //           },
+  //           {
+  //             source:10,
+  //             target:17,
+  //             value:1
+  //           },
+  //           {
+  //             source:8,
+  //             target:15,
+  //             value:2
+  //           },
+  //           {
+  //             source:0,
+  //             target:4,
+  //             value:2
+  //           },
+  //           {
+  //             source:12,
+  //             target:16,
+  //             value:3
+  //           },
+  //           {
+  //             source:4,
+  //             target:8,
+  //             value:5
+  //           },
+  //           {
+  //             source:5,
+  //             target:9,
+  //             value:1
+  //           }
+  //           ]
+  //         }
+  //         renderSankey({
+  //           el: 'chart',
+  //           layoutStyle: {
+  //             width: 840,
+  //             height: 440
+  //           },
+  //           data: product,
+  //           nodeCallback: function (d) {
+  //             var data = {
+  //               name: "shen"
+  //             };
+  //             var slot = doT.template($('#js_keydata_tpl').text())(data)
+  //             dialog({
+  //               slot: slot + slot + slot + slot
+  //             })
+  //             $('.ui_trendgrid_number').on('click', function () {
+  //               alert('djd')
+  //             })
+  //           }
+  //         })
+  //     }, 1000)
+  // });
+  // var toolTips = new ToolTips({
+  //   el: document.getElementById("chart")
+  // })
+  // toolTips.showToolTips()
+  // console.log(window.pageXOffset);
+  // Event.trigger( 'add', postData);
+</script>
+<script src="../build/app.js"></script>
+<script src="../build/vender.js"></script>
+</body>
+</html>

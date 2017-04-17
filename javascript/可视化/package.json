@@ -1,0 +1,25 @@
+{
+  "name": "visual",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^0.28.0",
+    "d3": "^4.7.4",
+    "d3-sankey": "^0.4.2",
+    "dot": "^1.1.1",
+    "dropkickjs": "^2.1.10",
+    "file-loader": "^0.11.0",
+    "graceful-fs": "^4.1.11",
+    "jquery": "^3.2.1",
+    "style-loader": "^0.16.1",
+    "url-loader": "^0.5.8",
+    "webpack": "^2.3.2",
+    "webpack-dev-server": "^2.4.2"
+  }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .wrapper {
+      width: 500px;
+      height: 500px;
+      margin: 50px auto;
+      position: relative;
+      -webkit-animation: flipVertical 1s ease 1600ms both;
+      animation: flipVertical 1s ease 1600ms both;
+    }
+    .left, .right {
+      position: absolute;
+      top: 0;
+    }
+    .left .line1, .left .line2, .left .line3 {
+      background: #52aae1;
+    }
+    .left .arc1 {
+      border:20px solid #52aae1;
+      border-left:20px solid transparent;
+      border-bottom:20px solid transparent;
+    }
+    .right {
+      left: 200px;
+    }
+    .left-box {
+      float: left;
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .right-box {
+      position: relative;
+      top: 0;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+    }
+    .line1 {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 20px;
+      height: 100%;
+      background-color: #c48eef;
+      -webkit-animation: enlargeH 400ms linear 0s forwards;
+      animation: enlargeH 400ms linear 0s forwards;
+    }
+    .line2 {
+      position: absolute;
+      top: 0;
+      left: 100%;
+      width: 100%;
+      height: 20px;
+      background: #c48eef;
+      -webkit-animation: decreaseW 400ms linear 400ms forwards;
+      animation: decreaseW 400ms linear 400ms forwards;
+    }
+    .arc1 {
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 160px;
+      height: 160px;
+      border:20px solid #c48eef;
+      border-left:20px solid transparent;
+      border-bottom:20px solid transparent;
+      border-radius: 50%;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+      -webkit-animation: arcRotate 400ms linear 800ms forwards;
+      animation: arcRotate 400ms linear 800ms forwards;
+    }
+    .line3 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 20px;
+      background: #c48eef;
+      -webkit-animation: increaseW 400ms linear 1200ms forwards;
+      animation: increaseW 400ms linear 1200ms forwards;
+    }
+    @keyframes enlargeH {
+      0% {
+        top: 100%;
+      }
+      100% {
+        top: 0;
+      }
+    }
+    @keyframes decreaseW {
+      0% {
+        left: 100%;
+      }
+      100% {
+        left: 0;
+      }
+    }
+    @keyframes arcRotate {
+      0% {
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+      100% {
+        -webkit-transform: rotate(-135deg);
+        transform: rotate(-135deg);
+      }
+    }
+    @keyframes increaseW {
+      0% {
+        width: 0;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+    @keyframes flipVertical {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        /*-moz-transform: scaleY(-1);
+        -webkit-transform: scaleY(-1);
+        -o-transform: scaleY(-1);
+        transform: scaleY(-1);*/
+        opacity: 0;
+      }
+    }
+    .flipx {
+      -moz-transform: rotateY(180deg) scaleY(-1);
+      -webkit-transform: rotateY(180deg) scaleY(-1);
+      -o-transform: rotateY(180deg) scaleY(-1);
+      transform: rotateY(180deg) scaleY(-1);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="left box flipx">
+      <div class="left-box">
+        <div class="arc1"></div>
+      </div>
+      <div class="right-box">
+        <div class="line1"></div>
+        <div class="line2">
+        </div>
+        <div class="line3"></div>
+      </div>
+    </div>
+    <div class="right box">
+      <div class="left-box">
+        <div class="arc1"></div>
+      </div>
+      <div class="right-box">
+        <div class="line1"></div>
+        <div class="line2">
+        </div>
+        <div class="line3"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
