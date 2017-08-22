@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>d3 中国地图</title>
+  <script src="./src/d3/d3.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    #map {
+      width: 90%;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    svg {
+      overflow: hidden;
+    }
+    text {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+  var width = document.body.clientWidth * 0.9;
+  var height = width;
+  var svg = d3.select("#map").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(0,0)");
+  // 颜色函数
+  var color = d3.scaleOrdinal(d3.schemeCategory10);
+  var fillColor = ['#ffd914', '#29ac80', '#2a73aa', '#ff9116', '#ff5b26']
+  // var fillColor= ['#29ac80']
+  var getColor = function (arr) {
+    var len = arr.length;
+    var color = arr[Math.floor(Math.random() * (len - 1))]
+    return color
+  }
+  d3.json('src/china-s.json', function(error, root) {
+    var center = d3.geoCentroid(root);
+    var scale  = 1;
+    var offset = [width/2, height/2];
+    var projection = d3.geoMercator().center(center).scale(scale).translate(offset);
+    // create the path
+    var path = d3.geoPath().projection(projection);
+    var bounds  = path.bounds(root);
+    var hscale  = scale*width  / (bounds[1][0] - bounds[0][0]);
+    var vscale  = scale*height / (bounds[1][1] - bounds[0][1]);
+    scale   = (hscale < vscale) ? 0.95 * hscale : 0.95 * vscale;
+    offset  = [width - (bounds[0][0] + bounds[1][0])/2,
+                      height - (bounds[0][1] + bounds[1][1])/2];
+    // new projection
+    projection = d3.geoMercator().center(center)
+        .scale(scale).translate(offset);
+    path = path.projection(projection);
+    // 绘制地图
+    svg.selectAll("path")
+      .data(root.features)
+      .enter()
+      .append("path")
+        .attr("stroke","#fff")
+        .attr("stroke-width", 1)
+        .attr("fill", function(d, i){
+          return getColor(fillColor);
+        })
+        .attr("d", path)
+        // .on("mouseover",function(d,i){
+        //     d3.select(this)
+        //         .attr("fill","yellow");
+        // })
+        // .on("mouseout",function(d,i){
+        //     d3.select(this)
+        //         .attr("fill",color(i));
+        // })
+    // 显示省份名称
+    // svg.selectAll("text")
+    //     .data(root.features)
+    //     .enter()
+    //     .append("text")
+    //       .attr("transform", function(d, i) {
+    //         if (d.properties.id == "20") {
+    //           return "translate("+ (path.centroid(d)[0] - 20) + ", "+ (path.centroid(d)[1] + 20) + ")";
+    //         }
+    //         return "translate("+ (path.centroid(d)[0] - 10) +", "+ path.centroid(d)[1] + ")";
+    //       })
+    //       .style('font-size', '10px')
+    //     .append('tspan')
+    //       .text(function (d) {
+    //         return d.properties.name;
+    //       })
+    //       .attr('dy', 4.5)
+    // 模拟标注的点
+    var  dots = [
+        {
+          "name":"北京",
+          "log":"116.3",
+          "lat":"39.9",
+          "img":"http://oayhezji6.bkt.clouddn.com/preview1.jpg"
+        },
+        {
+          "name":"上海",
+          "log":"121.4",
+          "lat":"31.2",
+          "img":"http://oayhezji6.bkt.clouddn.com/preview2.jpg"
+        },
+        {
+          "name":"桂林",
+          "log":"110.3",
+          "lat":"25.3",
+          "img":"http://oayhezji6.bkt.clouddn.com/preview3.jpg"
+        },
+        {
+          "name":"乌鲁木齐",
+          "log":"87.6",
+          "lat":"43.8",
+          "img":"http://oayhezji6.bkt.clouddn.com/preview8.jpg"
+        },
+        {
+          "name":"西藏",
+          "log":"91.2",
+          "lat":"29.7",
+          "img":"http://oayhezji6.bkt.clouddn.com/preview9.jpg"
+        }
+      ];
+    // 绘制标注的点
+    var location = svg.selectAll(".location")
+          .data(dots)
+          .enter()
+          .append("g")
+            .attr("class", "location")
+
+          // 用圆点表示一个标注点
+          location.append("circle")
+            .attr("fill", '#ffd914')
+            .attr("r", function (d, i) {
+              if (d.name === '北京') {
+                return 10;
+              }
+              return 5
+            });
+          // location.attr("transform", function (d) {
+          //   //计算标注点的初始位置
+          //   var coor = projection([d.log, d.lat]);
+          //   return "translate("+ coor[0] + "," + 0 +")";
+          // })
+          // .transition()
+          // .delay(function(d,i){
+          //     return 500 * i
+          // })
+          location.attr("transform", function (d) {
+              //计算标注点的位置
+              var coor = projection([d.log, d.lat]);
+              return "translate("+ coor[0] + "," + coor[1] +")";
+          })
+        location.append("text")
+              .attr('x', '1em')
+              .attr('y', '-1em')
+              .attr('fill', '#2a73aa')
+              .style('font-size', '12px')
+              .attr('dy', '.5em')
+              .text(function (d) {
+                return d.name;
+              })
+    })
+  </script>
+</body>
+</html>

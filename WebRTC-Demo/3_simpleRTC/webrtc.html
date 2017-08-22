@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+    Local: <br>
+    <video id="localVideo" autoplay></video><br>
+    Remote: <br>
+    <video id="remoteVideo" autoplay></video>
+
+    <script>
+        // �������ڿ�����һ�˵�����������offer��#�ź�����ֵ��һ������
+        var isCaller = window.location.href.split('#')[1];
+
+        // ��������������WebSocket����
+        var socket = new WebSocket("ws://127.0.0.1:3000");
+
+        // stun��turn������
+        var iceServer = {
+            "iceServers": [{
+                "url": "stun:stun.l.google.com:19302"
+            }, {
+                "url": "turn:numb.viagenie.ca",
+                "username": "webrtc@live.com",
+                "credential": "muazkh"
+            }]
+        };
+
+        // ����PeerConnectionʵ�� (����Ϊnull��û��iceserver����ʹû��stunserver��turnserver���Կ��ھ�������ͨѶ)
+        var pc = new webkitRTCPeerConnection(iceServer);
+
+        // ����ICE��ѡ�������ͻ���
+        pc.onicecandidate = function(event){
+            if (event.candidate !== null) {
+                socket.send(JSON.stringify({
+                    "event": "_ice_candidate",
+                    "data": {
+                        "candidate": event.candidate
+                    }
+                }));
+            }
+        };
+
+        // �������⵽ý�������ӵ����أ������󶨵�һ��video��ǩ������
+        pc.onaddstream = function(event){
+            document.getElementById('remoteVideo').src = URL.createObjectURL(event.stream);
+        };
+
+        // ����offer��answer�ĺ��������ͱ���session����
+        var sendOfferFn = function(desc){
+            pc.setLocalDescription(desc);
+            socket.send(JSON.stringify({
+                "event": "_offer",
+                "data": {
+                    "sdp": desc
+                }
+            }));
+        },
+        sendAnswerFn = function(desc){
+            pc.setLocalDescription(desc);
+            socket.send(JSON.stringify({
+                "event": "_answer",
+                "data": {
+                    "sdp": desc
+                }
+            }));
+        };
+
+        // ��ȡ������Ƶ����Ƶ��
+        navigator.webkitGetUserMedia({
+            "audio": true,
+            "video": true
+        }, function(stream){
+            //�󶨱���ý������video��ǩ��������
+            document.getElementById('localVideo').src = URL.createObjectURL(stream);
+            //��PeerConnection�м�����Ҫ���͵���
+            pc.addStream(stream);
+            //�����Ƿ�����������һ��offer����
+            if(isCaller){
+                pc.createOffer(sendOfferFn, function (error) {
+                    console.log('Failure callback: ' + error);
+                });
+            }
+        }, function(error){
+            //����ý��������ʧ�ܴ���
+            console.log('getUserMedia error: ' + error);
+        });
+
+        //��������������
+        socket.onmessage = function(event){
+            var json = JSON.parse(event.data);
+            console.log('onmessage: ', json);
+            //������һ��ICE�ĺ�ѡ�����������뵽PeerConnection�У������趨�Է���session����Ϊ���ݹ���������
+            if( json.event === "_ice_candidate" ){
+                pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
+            } else {
+                pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
+                // ������һ��offer����ô��Ҫ�ظ�һ��answer
+                if(json.event === "_offer") {
+                    pc.createAnswer(sendAnswerFn, function (error) {
+                        console.log('Failure callback: ' + error);
+                    });
+                }
+            }
+        };
+    </script>
+</body>
+</html>

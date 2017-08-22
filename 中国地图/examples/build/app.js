@@ -31707,18 +31707,18 @@ var convertData = function (data) {
 };
 
 var option = {
-    backgroundColor: '#404a59',
+    backgroundColor: '#fff',
     title: {
-        text: '全国主要城市空气质量',
-        subtext: 'data from PM25.in',
-        sublink: 'http://www.pm25.in',
+        text: '更美覆盖图',
+        subtext: '',
+        sublink: 'http://m.gmei.com/',
         left: 'center',
         textStyle: {
-            color: '#fff'
+            color: '#444'
         }
     },
     tooltip : {
-        trigger: 'item'
+      trigger: 'item'
     },
     legend: {
         orient: 'vertical',
@@ -31726,21 +31726,21 @@ var option = {
         x:'right',
         data:['pm2.5'],
         textStyle: {
-            color: '#fff'
+          color: '#444'
         }
     },
     geo: {
         map: 'china',
         label: {
             emphasis: {
-                show: false
+              show: false
             }
         },
         roam: true,
         itemStyle: {
             normal: {
                 areaColor: '#323c48',
-                borderColor: '#111'
+                borderColor: '#111',
             },
             emphasis: {
                 areaColor: '#2a333d'
@@ -31754,21 +31754,21 @@ var option = {
             coordinateSystem: 'geo',
             data: convertData(data),
             symbolSize: function (val) {
-                return val[2] / 10;
+              return val[2] / 10;
             },
             label: {
-                normal: {
-                    formatter: '{b}',
-                    position: 'right',
-                    show: false
-                },
-                emphasis: {
-                    show: true
-                }
+              normal: {
+                  formatter: '{b}',
+                  position: 'right',
+                  show: false
+              },
+              emphasis: {
+                  show: true
+              }
             },
             itemStyle: {
                 normal: {
-                    color: '#ddb926'
+                    color: '#f4e925'
                 }
             }
         },
@@ -31807,6 +31807,13 @@ var option = {
 };
 // 绘制图表
 myChart.setOption(option);
+setTimeout(function () {
+    myChart.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 1,
+        dataIndex: 1
+    });
+}, 500);
 
 
 /***/ }),

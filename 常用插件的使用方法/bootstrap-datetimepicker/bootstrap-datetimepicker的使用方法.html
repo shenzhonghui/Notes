@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bootstrap-datetimepicker的使用方法</title>
+  <link href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="libs/bootstrap-datetimepicker.min.css">
+  <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="libs/moment-with-locales.js" charset="utf-8"></script>
+  <script src="libs/bootstrap-datetimepicker.js" charset="utf-8"></script>
+  <script src="http://cdn.bootcss.com/vue/2.3.3/vue.min.js"></script>
+  <style media="screen">
+    body {
+      background: #f4f4f4;
+      font-family: -apple-system, "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    }
+    h4 {
+      margin: 20px;
+      text-align: center;
+    }
+    .title {
+      padding: 20px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .main {
+      width: 800px;
+      height: 600px;
+      margin: 100px auto;
+      background: #fff;
+      clear: both;
+    }
+    .actions {
+      text-align: center;
+      padding: 0 40px;
+    }
+    .actions span {
+      display: inline-block;
+      width: 120px;
+      padding: 8px 15px;
+      background: #23d160;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .tips_wrap {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      padding: 10px 15px;
+      border-radius: 4px;
+      background: #ff3860;
+      color: #fff;
+      z-index: 9999
+    }
+  </style>
+</head>
+<body>
+  <div class="main" id="app">
+    <div class="title">
+      bootstrap-datetimepicker的中文显示到时分秒
+    </div>
+    <div class="form-group col-lg-12">
+      <label class="control-label col-lg-2">开始时间：</label>
+      <div class="col-lg-4">
+        <div class='input-group date' id='purchase__start_date'>
+          <input type='text' class="form-control purchase__start_date_ipt" />
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-lg-12">
+      <label class="control-label col-lg-2">结束时间：</label>
+      <div class="col-lg-4">
+        <div class='input-group date' id='purchase__end_date'>
+          <input type='text' class="form-control purchase__end_date_ipt"/>
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <span @click="triggerSub">提交</span>
+    </div>
+    <div class="tips_wrap" v-show="showTips">{{tipText}}</div>
+  </div>
+
+  <script type="text/javascript">
+    $(function() {
+      $('#purchase__start_date').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm:ss',
+        locale: 'zh-cn'
+      })
+      $('#purchase__end_date').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm:ss',
+        locale: 'zh-cn'
+      })
+    })
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        tipText: '',
+        showTips: false,
+        timer: null
+      },
+      mounted: function () {
+      },
+      methods: {
+        triggerSub: function () {
+          var start = $('#purchase__start_date_ipt').val();
+          var end = $('#purchase__end_date_ipt').val();
+          if (!start) {
+            this.tips('开始日期不能为空')
+            return false
+          }
+          if (!end) {
+            this.tips('结束日期不能为空')
+            return false
+          }
+          if (start > end) {
+            this.tips('开始日期不能大于结束日期')
+            return false
+          }
+          this.tips('提交成功')
+        },
+        tips: function (content) {
+          var self = this
+          if (self.timer) {
+            clearTimeout(self.timer)
+          }
+          self.tipText = content
+          self.showTips = true
+          self.timer = setTimeout(function () {
+            self.showTips = false
+            self.tipText = ''
+          }, 2000)
+        }
+      }
+    })
+  </script>
+</body>
+</html>
